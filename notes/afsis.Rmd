@@ -1,0 +1,47 @@
+
+
+```{r}
+
+library(dplyr)
+library(sf)
+library(tmap)
+library(ggplot2)
+```
+
+```{r}
+afsis.data <- read.csv("../data/plotting_data.csv") %>%
+  mutate(Depth = factor(Depth, levels = c("Topsoil", "Subsoil"), ordered = TRUE))%>%
+  st_as_sf(coords= c("Longitude", "Latitude"), crs=4326)
+
+str(afsis.data)
+
+
+```
+
+```{r ggplot}
+ggplot(afsis.data, aes(y= CORG, x=LandCover, color=Depth))+
+  geom_boxplot()
+
+
+```
+
+```{r map}
+data("World")
+World%>%
+  filter(continent=="Africa")%>%
+  plot()
+
+```
+
+```{r}
+data("World")
+World%>%
+  filter(continent=="Africa")%>%
+  tm_shape()+
+  tm_borders(col = "brown")+
+  tm_shape(afsis.data)+
+  tm_dots(col = "LandCover",size = "CORG")
+
+
+```
+
